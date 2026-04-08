@@ -1,0 +1,125 @@
+{
+	"name": "GL Entry Rule Line",
+	"doctype": "DocType",
+	"module": "GL Customizer",
+	"istable": 1,
+	"editable_grid": 1,
+	"engine": "InnoDB",
+	"field_order": [
+		"entry_group",
+		"column_break_acct",
+		"account",
+		"account_field",
+		"section_break_amounts",
+		"debit_formula",
+		"column_break_amounts",
+		"credit_formula",
+		"section_break_party",
+		"party_type",
+		"party_field",
+		"column_break_cost",
+		"cost_center",
+		"cost_center_field",
+		"section_break_remarks",
+		"remarks"
+	],
+	"fields": [
+		{
+			"fieldname": "entry_group",
+			"fieldtype": "Data",
+			"label": "Entry Group",
+			"reqd": 1,
+			"in_list_view": 1,
+			"description": "Entries in the same group must balance (total debit = total credit)"
+		},
+		{
+			"fieldname": "column_break_acct",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "account",
+			"fieldtype": "Link",
+			"label": "Account",
+			"options": "Account",
+			"in_list_view": 1,
+			"description": "Static GL account. Leave blank to use Account Field instead."
+		},
+		{
+			"fieldname": "account_field",
+			"fieldtype": "Data",
+			"label": "Account Field",
+			"description": "Read account from document field, e.g. doc.credit_to, doc.debit_to"
+		},
+		{
+			"fieldname": "section_break_amounts",
+			"fieldtype": "Section Break",
+			"label": "Amounts"
+		},
+		{
+			"fieldname": "debit_formula",
+			"fieldtype": "Data",
+			"label": "Debit Formula",
+			"in_list_view": 1,
+			"description": "Python expression for debit amount, e.g. doc.base_grand_total"
+		},
+		{
+			"fieldname": "column_break_amounts",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "credit_formula",
+			"fieldtype": "Data",
+			"label": "Credit Formula",
+			"in_list_view": 1,
+			"description": "Python expression for credit amount, e.g. doc.base_grand_total"
+		},
+		{
+			"fieldname": "section_break_party",
+			"fieldtype": "Section Break",
+			"label": "Party & Cost Center"
+		},
+		{
+			"fieldname": "party_type",
+			"fieldtype": "Link",
+			"label": "Party Type",
+			"options": "DocType",
+			"description": "e.g. Supplier, Customer"
+		},
+		{
+			"fieldname": "party_field",
+			"fieldtype": "Data",
+			"label": "Party Field",
+			"description": "Read party from document field, e.g. doc.supplier"
+		},
+		{
+			"fieldname": "column_break_cost",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "cost_center",
+			"fieldtype": "Link",
+			"label": "Cost Center",
+			"options": "Cost Center",
+			"description": "Static cost center. Leave blank to use Cost Center Field."
+		},
+		{
+			"fieldname": "cost_center_field",
+			"fieldtype": "Data",
+			"label": "Cost Center Field",
+			"description": "Read cost center from document field, e.g. doc.cost_center"
+		},
+		{
+			"fieldname": "section_break_remarks",
+			"fieldtype": "Section Break"
+		},
+		{
+			"fieldname": "remarks",
+			"fieldtype": "Small Text",
+			"label": "Remarks",
+			"description": "Optional remarks for the GL entry"
+		}
+	],
+	"permissions": [],
+	"sort_field": "creation",
+	"sort_order": "ASC"
+}

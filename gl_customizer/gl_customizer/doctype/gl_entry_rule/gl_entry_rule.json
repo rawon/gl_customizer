@@ -1,0 +1,127 @@
+{
+	"name": "GL Entry Rule",
+	"doctype": "DocType",
+	"module": "GL Customizer",
+	"autoname": "field:rule_name",
+	"document_type": "Setup",
+	"engine": "InnoDB",
+	"field_order": [
+		"rule_name",
+		"enabled",
+		"column_break_source",
+		"source_doctype",
+		"company",
+		"priority",
+		"section_break_condition",
+		"condition",
+		"section_break_suppress",
+		"suppress_default_entries",
+		"suppress_filters",
+		"section_break_entries",
+		"entry_lines"
+	],
+	"fields": [
+		{
+			"fieldname": "rule_name",
+			"fieldtype": "Data",
+			"label": "Rule Name",
+			"reqd": 1,
+			"unique": 1
+		},
+		{
+			"fieldname": "enabled",
+			"fieldtype": "Check",
+			"label": "Enabled",
+			"default": "1"
+		},
+		{
+			"fieldname": "column_break_source",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "source_doctype",
+			"fieldtype": "Select",
+			"label": "Source Document Type",
+			"options": "\nPurchase Invoice\nDelivery Note",
+			"reqd": 1,
+			"in_list_view": 1,
+			"in_standard_filter": 1
+		},
+		{
+			"fieldname": "company",
+			"fieldtype": "Link",
+			"label": "Company",
+			"options": "Company",
+			"description": "Leave blank to apply to all companies"
+		},
+		{
+			"fieldname": "priority",
+			"fieldtype": "Int",
+			"label": "Priority",
+			"default": "0",
+			"description": "Higher priority rules execute first"
+		},
+		{
+			"fieldname": "section_break_condition",
+			"fieldtype": "Section Break",
+			"label": "Condition"
+		},
+		{
+			"fieldname": "condition",
+			"fieldtype": "Small Text",
+			"label": "Condition",
+			"description": "Python expression. Rule applies only when this evaluates to True. Leave blank to always apply. Available: doc, flt, cint, abs. Example: doc.supplier_group == 'Import'"
+		},
+		{
+			"fieldname": "section_break_suppress",
+			"fieldtype": "Section Break",
+			"label": "Default Entry Handling"
+		},
+		{
+			"fieldname": "suppress_default_entries",
+			"fieldtype": "Check",
+			"label": "Suppress All Default GL Entries",
+			"description": "If checked, ALL default GL entries from ERPNext will be removed before custom entries are applied"
+		},
+		{
+			"fieldname": "suppress_filters",
+			"fieldtype": "Table",
+			"label": "Suppress Specific Default Entries",
+			"options": "GL Entry Suppress Filter",
+			"depends_on": "eval:!doc.suppress_default_entries",
+			"description": "Selectively remove specific default GL entries by account name pattern"
+		},
+		{
+			"fieldname": "section_break_entries",
+			"fieldtype": "Section Break",
+			"label": "Custom GL Entry Lines"
+		},
+		{
+			"fieldname": "entry_lines",
+			"fieldtype": "Table",
+			"label": "Entry Lines",
+			"options": "GL Entry Rule Line",
+			"reqd": 1,
+			"description": "Define custom GL entries. Entries in the same Entry Group must balance (total debit = total credit)."
+		}
+	],
+	"permissions": [
+		{
+			"role": "Accounts Manager",
+			"read": 1,
+			"write": 1,
+			"create": 1,
+			"delete": 1
+		},
+		{
+			"role": "System Manager",
+			"read": 1,
+			"write": 1,
+			"create": 1,
+			"delete": 1
+		}
+	],
+	"sort_field": "priority",
+	"sort_order": "DESC",
+	"track_changes": 1
+}

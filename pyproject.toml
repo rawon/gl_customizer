@@ -1,0 +1,17 @@
+[project]
+name = "gl_customizer"
+version = "0.1.0"
+description = "Configure which GL entries are created when Purchase Invoices and Delivery Notes are submitted"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Aditya W" }]
+
+dependencies = ["frappe>=17.0.0,<18.0.0"]
+
+[build-system]
+requires = ["flit_core >=3.4,<4"]
+build-backend = "flit_core.buildapi"
+
+[tool.bench.frappe-dependencies]
+frappe = ">=17.0.0,<18.0.0"
+erpnext = ">=17.0.0,<18.0.0"

@@ -1,0 +1,35 @@
+{
+	"name": "GL Entry Suppress Filter",
+	"doctype": "DocType",
+	"module": "GL Customizer",
+	"istable": 1,
+	"editable_grid": 1,
+	"engine": "InnoDB",
+	"field_order": [
+		"account_contains",
+		"side"
+	],
+	"fields": [
+		{
+			"fieldname": "account_contains",
+			"fieldtype": "Data",
+			"label": "Account Contains",
+			"reqd": 1,
+			"in_list_view": 1,
+			"description": "Suppress default GL entries where the account name contains this string"
+		},
+		{
+			"fieldname": "side",
+			"fieldtype": "Select",
+			"label": "Side",
+			"options": "Both\nDebit\nCredit",
+			"default": "Both",
+			"reqd": 1,
+			"in_list_view": 1,
+			"description": "Which side of the entry to suppress"
+		}
+	],
+	"permissions": [],
+	"sort_field": "creation",
+	"sort_order": "ASC"
+}
