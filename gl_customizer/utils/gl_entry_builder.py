@@ -20,14 +20,16 @@ def apply_gl_rules(doc, gl_entries):
 		# Suppress default entries (just clears them, nothing else)
 		if rule.suppress_default_entries:
 			gl_entries = []
-		elif rule.suppress_filters:
+
+		# Override accounts on matching default entries
+		if rule.enable_account_overrides and not rule.suppress_default_entries and rule.suppress_filters:
 			gl_entries = apply_account_overrides(gl_entries, rule.suppress_filters)
 
 		# Build and validate custom entries
-		custom_entries = build_custom_entries(doc, rule)
-		validate_total_balance(custom_entries, rule.name)
-
-		gl_entries.extend(custom_entries)
+		if rule.enable_custom_entries and rule.entry_lines:
+			custom_entries = build_custom_entries(doc, rule)
+			validate_total_balance(custom_entries, rule.name)
+			gl_entries.extend(custom_entries)
 
 	return gl_entries
 

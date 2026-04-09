@@ -7,9 +7,10 @@ from frappe.utils import flt, cint
 class GLEntryRule(Document):
 	def validate(self):
 		self.validate_condition_syntax()
-		self.validate_formula_syntax()
-		self.validate_entry_lines()
-		self.validate_account_fields()
+		if self.enable_custom_entries:
+			self.validate_formula_syntax()
+			self.validate_entry_lines()
+			self.validate_account_fields()
 
 	def validate_condition_syntax(self):
 		if self.condition:

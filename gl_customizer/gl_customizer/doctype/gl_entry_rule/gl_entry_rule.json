@@ -16,8 +16,11 @@
 		"condition",
 		"section_break_suppress",
 		"suppress_default_entries",
+		"section_break_override",
+		"enable_account_overrides",
 		"suppress_filters",
 		"section_break_entries",
+		"enable_custom_entries",
 		"entry_lines"
 	],
 	"fields": [
@@ -75,7 +78,7 @@
 		{
 			"fieldname": "section_break_suppress",
 			"fieldtype": "Section Break",
-			"label": "Default Entry Handling"
+			"label": "Suppress Default Entries"
 		},
 		{
 			"fieldname": "suppress_default_entries",
@@ -84,11 +87,24 @@
 			"description": "If checked, ALL default GL entries from ERPNext will be removed. Custom entry lines below are added separately."
 		},
 		{
+			"fieldname": "section_break_override",
+			"fieldtype": "Section Break",
+			"label": "Override Default Entry Accounts"
+		},
+		{
+			"fieldname": "enable_account_overrides",
+			"fieldtype": "Check",
+			"label": "Enable Account Overrides",
+			"description": "Replace accounts on matching default GL entries. Amounts are kept unchanged.",
+			"depends_on": "eval:!doc.suppress_default_entries"
+		},
+		{
 			"fieldname": "suppress_filters",
 			"fieldtype": "Table",
-			"label": "Override Default Entry Accounts",
+			"label": "Account Override Rules",
 			"options": "GL Entry Suppress Filter",
-			"depends_on": "eval:!doc.suppress_default_entries",
+			"depends_on": "eval:doc.enable_account_overrides && !doc.suppress_default_entries",
+			"mandatory_depends_on": "eval:doc.enable_account_overrides && !doc.suppress_default_entries",
 			"description": "Replace accounts on matching default GL entries. Amounts are kept unchanged."
 		},
 		{
@@ -97,11 +113,18 @@
 			"label": "Custom GL Entry Lines"
 		},
 		{
+			"fieldname": "enable_custom_entries",
+			"fieldtype": "Check",
+			"label": "Enable Custom GL Entries",
+			"description": "Add custom GL entries. Total debit must equal total credit across all lines."
+		},
+		{
 			"fieldname": "entry_lines",
 			"fieldtype": "Table",
 			"label": "Entry Lines",
 			"options": "GL Entry Rule Line",
-			"reqd": 1,
+			"depends_on": "eval:doc.enable_custom_entries",
+			"mandatory_depends_on": "eval:doc.enable_custom_entries",
 			"description": "Define custom GL entries. Total debit must equal total credit across all lines."
 		}
 	],
