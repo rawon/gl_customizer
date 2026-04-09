@@ -53,7 +53,6 @@ function show_test_results(result) {
 		html += `<table class="table table-bordered table-sm">
 			<thead>
 				<tr>
-					<th>${__("Group")}</th>
 					<th>${__("Account")}</th>
 					<th class="text-right">${__("Debit")}</th>
 					<th class="text-right">${__("Credit")}</th>
@@ -70,7 +69,6 @@ function show_test_results(result) {
 			total_debit += entry.debit || 0;
 			total_credit += entry.credit || 0;
 			html += `<tr>
-				<td>${entry.entry_group || ""}</td>
 				<td>${entry.account || ""}</td>
 				<td class="text-right">${frappe.format(entry.debit, { fieldtype: "Currency" })}</td>
 				<td class="text-right">${frappe.format(entry.credit, { fieldtype: "Currency" })}</td>
@@ -80,7 +78,7 @@ function show_test_results(result) {
 		}
 
 		html += `<tr class="font-weight-bold">
-				<td colspan="2">${__("Total")}</td>
+				<td>${__("Total")}</td>
 				<td class="text-right">${frappe.format(total_debit, { fieldtype: "Currency" })}</td>
 				<td class="text-right">${frappe.format(total_credit, { fieldtype: "Currency" })}</td>
 				<td colspan="2"></td>
@@ -88,7 +86,7 @@ function show_test_results(result) {
 
 		let balanced = Math.abs(total_debit - total_credit) < 0.01;
 		html += `<tr>
-				<td colspan="6" class="text-center ${balanced ? "text-success" : "text-danger"}">
+				<td colspan="5" class="text-center ${balanced ? "text-success" : "text-danger"}">
 					${balanced ? __("Balanced") : __("IMBALANCED: Debit - Credit = ") + frappe.format(total_debit - total_credit, { fieldtype: "Currency" })}
 				</td>
 			</tr>`;

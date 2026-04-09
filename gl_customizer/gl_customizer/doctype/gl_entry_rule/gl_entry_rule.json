@@ -42,7 +42,7 @@
 			"fieldname": "source_doctype",
 			"fieldtype": "Select",
 			"label": "Source Document Type",
-			"options": "\nPurchase Invoice\nDelivery Note",
+			"options": "\nPurchase Invoice\nSales Invoice\nDelivery Note",
 			"reqd": 1,
 			"in_list_view": 1,
 			"in_standard_filter": 1
@@ -81,15 +81,15 @@
 			"fieldname": "suppress_default_entries",
 			"fieldtype": "Check",
 			"label": "Suppress All Default GL Entries",
-			"description": "If checked, ALL default GL entries from ERPNext will be removed before custom entries are applied"
+			"description": "If checked, ALL default GL entries from ERPNext will be removed. Custom entry lines below are added separately."
 		},
 		{
 			"fieldname": "suppress_filters",
 			"fieldtype": "Table",
-			"label": "Suppress Specific Default Entries",
+			"label": "Override Default Entry Accounts",
 			"options": "GL Entry Suppress Filter",
 			"depends_on": "eval:!doc.suppress_default_entries",
-			"description": "Selectively remove specific default GL entries by account name pattern"
+			"description": "Replace accounts on matching default GL entries. Amounts are kept unchanged."
 		},
 		{
 			"fieldname": "section_break_entries",
@@ -102,7 +102,7 @@
 			"label": "Entry Lines",
 			"options": "GL Entry Rule Line",
 			"reqd": 1,
-			"description": "Define custom GL entries. Entries in the same Entry Group must balance (total debit = total credit)."
+			"description": "Define custom GL entries. Total debit must equal total credit across all lines."
 		}
 	],
 	"permissions": [

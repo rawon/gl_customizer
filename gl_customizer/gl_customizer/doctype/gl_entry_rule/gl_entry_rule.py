@@ -40,25 +40,17 @@ class GLEntryRule(Document):
 		if not self.entry_lines:
 			frappe.throw(_("At least one Entry Line is required."))
 
-		groups = {}
-		for line in self.entry_lines:
-			group = line.entry_group
-			if group not in groups:
-				groups[group] = {"has_debit": False, "has_credit": False}
-			if line.debit_formula:
-				groups[group]["has_debit"] = True
-			if line.credit_formula:
-				groups[group]["has_credit"] = True
+		has_debit = any(line.debit_formula for line in self.entry_lines)
+		has_credit = any(line.credit_formula for line in self.entry_lines)
 
-		for group, info in groups.items():
-			if not info["has_debit"] or not info["has_credit"]:
-				frappe.msgprint(
-					_("Warning: Entry group '{0}' has only {1} entries. It may not balance.").format(
-						group, "debit" if info["has_debit"] else "credit"
-					),
-					indicator="orange",
-					alert=True,
-				)
+		if not has_debit or not has_credit:
+			frappe.msgprint(
+				_("Warning: Entry lines have only {0} formulas. They may not balance.").format(
+					"debit" if has_debit else "credit"
+				),
+				indicator="orange",
+				alert=True,
+			)
 
 	def validate_account_fields(self):
 		for line in self.entry_lines:
@@ -97,7 +89,6 @@ def test_rule(rule_name, source_doc_name):
 			"party": entry.get("party"),
 			"cost_center": entry.get("cost_center"),
 			"remarks": entry.get("remarks"),
-			"entry_group": entry.get("_entry_group"),
 		})
 
 	return {"message": _("Rule matched. Preview below."), "entries": preview}

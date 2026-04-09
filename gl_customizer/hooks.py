@@ -7,5 +7,6 @@ app_license = "MIT"
 
 override_doctype_class = {
 	"Purchase Invoice": "gl_customizer.overrides.purchase_invoice.CustomPurchaseInvoice",
+	"Sales Invoice": "gl_customizer.overrides.sales_invoice.CustomSalesInvoice",
 	"Delivery Note": "gl_customizer.overrides.delivery_note.CustomDeliveryNote",
 }

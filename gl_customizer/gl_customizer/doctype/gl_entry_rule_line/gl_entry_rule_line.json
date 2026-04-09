@@ -6,13 +6,10 @@
 	"editable_grid": 1,
 	"engine": "InnoDB",
 	"field_order": [
-		"entry_group",
-		"column_break_acct",
 		"account",
 		"account_field",
-		"section_break_amounts",
-		"debit_formula",
 		"column_break_amounts",
+		"debit_formula",
 		"credit_formula",
 		"section_break_party",
 		"party_type",
@@ -24,18 +21,6 @@
 		"remarks"
 	],
 	"fields": [
-		{
-			"fieldname": "entry_group",
-			"fieldtype": "Data",
-			"label": "Entry Group",
-			"reqd": 1,
-			"in_list_view": 1,
-			"description": "Entries in the same group must balance (total debit = total credit)"
-		},
-		{
-			"fieldname": "column_break_acct",
-			"fieldtype": "Column Break"
-		},
 		{
 			"fieldname": "account",
 			"fieldtype": "Link",
@@ -51,9 +36,8 @@
 			"description": "Read account from document field, e.g. doc.credit_to, doc.debit_to"
 		},
 		{
-			"fieldname": "section_break_amounts",
-			"fieldtype": "Section Break",
-			"label": "Amounts"
+			"fieldname": "column_break_amounts",
+			"fieldtype": "Column Break"
 		},
 		{
 			"fieldname": "debit_formula",
@@ -61,10 +45,6 @@
 			"label": "Debit Formula",
 			"in_list_view": 1,
 			"description": "Python expression for debit amount, e.g. doc.base_grand_total"
-		},
-		{
-			"fieldname": "column_break_amounts",
-			"fieldtype": "Column Break"
 		},
 		{
 			"fieldname": "credit_formula",

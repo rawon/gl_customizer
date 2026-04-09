@@ -6,8 +6,8 @@ from frappe.utils import flt, cint
 def apply_gl_rules(doc, gl_entries):
 	"""Apply all matching GL Entry Rules to modify the GL entry map.
 
-	Called from overridden get_gl_entries() on Purchase Invoice and Delivery Note.
-	Returns the modified gl_entries list.
+	Called from overridden get_gl_entries() on Purchase Invoice, Sales Invoice,
+	and Delivery Note. Returns the modified gl_entries list.
 	"""
 	rules = get_matching_rules(doc)
 	if not rules:
@@ -17,15 +17,15 @@ def apply_gl_rules(doc, gl_entries):
 		if not evaluate_condition(rule, doc):
 			continue
 
-		# Suppress default entries
+		# Suppress default entries (just clears them, nothing else)
 		if rule.suppress_default_entries:
 			gl_entries = []
 		elif rule.suppress_filters:
-			gl_entries = apply_suppress_filters(gl_entries, rule.suppress_filters)
+			gl_entries = apply_account_overrides(gl_entries, rule.suppress_filters)
 
 		# Build and validate custom entries
 		custom_entries = build_custom_entries(doc, rule)
-		validate_group_balance(custom_entries, rule.name)
+		validate_total_balance(custom_entries, rule.name)
 
 		gl_entries.extend(custom_entries)
 
@@ -75,28 +75,30 @@ def evaluate_condition(rule, doc):
 		return False
 
 
-def apply_suppress_filters(gl_entries, filters):
-	"""Remove GL entries matching the suppress filter criteria."""
-	result = []
+def apply_account_overrides(gl_entries, filters):
+	"""Replace accounts on matching GL entries. Amounts are kept unchanged."""
 	for entry in gl_entries:
-		suppress = False
 		account = (entry.get("account") or "").lower()
 
 		for f in filters:
 			pattern = (f.account_contains or "").lower()
-			if pattern and pattern in account:
-				side = f.side or "Both"
-				if side == "Both":
-					suppress = True
-				elif side == "Debit" and flt(entry.get("debit")) > 0:
-					suppress = True
-				elif side == "Credit" and flt(entry.get("credit")) > 0:
-					suppress = True
+			if not pattern or pattern not in account:
+				continue
 
-		if not suppress:
-			result.append(entry)
+			side = f.side or "Both"
+			matched = False
 
-	return result
+			if side == "Both":
+				matched = True
+			elif side == "Debit" and flt(entry.get("debit")) > 0:
+				matched = True
+			elif side == "Credit" and flt(entry.get("credit")) > 0:
+				matched = True
+
+			if matched and f.replacement_account:
+				entry["account"] = f.replacement_account
+
+	return gl_entries
 
 
 def build_custom_entries(doc, rule):
@@ -152,39 +154,33 @@ def build_custom_entries(doc, rule):
 			item=None,
 		)
 
-		# Tag with entry group for validation (not saved to DB)
-		gl_dict["_entry_group"] = line.entry_group
 		entries.append(gl_dict)
 
 	return entries
 
 
-def validate_group_balance(entries, rule_name):
-	"""Validate that entries within each entry group balance."""
-	groups = {}
-	for entry in entries:
-		group = entry.get("_entry_group", "default")
-		if group not in groups:
-			groups[group] = {"debit": 0, "credit": 0}
-		groups[group]["debit"] += flt(entry.get("debit"))
-		groups[group]["credit"] += flt(entry.get("credit"))
+def validate_total_balance(entries, rule_name):
+	"""Validate that total debit equals total credit across all custom entries."""
+	if not entries:
+		return
 
-	for group, totals in groups.items():
-		diff = abs(totals["debit"] - totals["credit"])
-		if diff > 0.001:
-			frappe.throw(
-				_(
-					"GL Customizer rule '{0}': Entry group '{1}' is not balanced. "
-					"Debit: {2}, Credit: {3}, Difference: {4}"
-				).format(
-					rule_name,
-					group,
-					frappe.format_value(totals["debit"], {"fieldtype": "Currency"}),
-					frappe.format_value(totals["credit"], {"fieldtype": "Currency"}),
-					frappe.format_value(diff, {"fieldtype": "Currency"}),
-				),
-				title=_("GL Entry Imbalance"),
-			)
+	total_debit = sum(flt(e.get("debit")) for e in entries)
+	total_credit = sum(flt(e.get("credit")) for e in entries)
+	diff = abs(total_debit - total_credit)
+
+	if diff > 0.001:
+		frappe.throw(
+			_(
+				"GL Customizer rule '{0}': Custom entries are not balanced. "
+				"Total Debit: {1}, Total Credit: {2}, Difference: {3}"
+			).format(
+				rule_name,
+				frappe.format_value(total_debit, {"fieldtype": "Currency"}),
+				frappe.format_value(total_credit, {"fieldtype": "Currency"}),
+				frappe.format_value(diff, {"fieldtype": "Currency"}),
+			),
+			title=_("GL Entry Imbalance"),
+		)
 
 
 def _get_eval_globals(doc):
